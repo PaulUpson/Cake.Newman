@@ -5,6 +5,7 @@ namespace Cake.Newman
         internal const string Environment = "--environment";
         internal const string Globals = "--globals";
         internal const string Folder = "--folder";
+        internal const string NoInsecureFileRead = "--no-insecure-file-read";
         internal const string ExportEnvironment = "--export-environment";
         internal const string ExportGlobals = "--export-globals";
         internal const string ExportCollection = "--export-collection";
@@ -17,5 +18,12 @@ namespace Cake.Newman
         internal const string Reporters = "--reporters";
         internal const string IterationCount = "--iteration-count";
         internal const string Data = "-d";
+        internal const string SuppressExitCode = "--suppress-exit-code";
+        internal const string Color = "--color";
+        internal const string DisableUnicode = "--disable-unicode";
+        internal const string Verbose = "--verbose";
+        internal const string SslClientCert = "--ssl-client-cert";
+        internal const string SslClientKey = "--ssl-client-key";
+        internal const string SslClientPassphrase = "--ssl-client-passphrase";
     }
 }

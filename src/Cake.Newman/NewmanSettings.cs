@@ -39,6 +39,11 @@ namespace Cake.Newman
         public string Folder { get; set; }
 
         /// <summary>
+        ///     Prevents reading of files situated outside of the working directory.
+        /// </summary>
+        public bool NoInsecureFileRead { get; set; }
+
+        /// <summary>
         ///     The path to the file where Newman will output the final environment variables file before completing a run.
         /// </summary>
         public FilePath ExportEnvironmentPath { get; set; }
@@ -84,9 +89,37 @@ namespace Cake.Newman
         public bool ExitOnFirstFailure { get; set; }
 
         /// <summary>
+        ///     Specify whether or not to override the default exit code for the current run.
+        /// </summary>
+        public bool SuppressExitCode { get; set; }
+
+        /// <summary>
         ///     Specify iteration count.
         /// </summary>
         public int IterationCount { get; set; }
+
+        /// <summary>
+        ///     Enable or Disable colored CLI output. The color value can be any of the three: 'on', 'off' or 'auto'(default).
+        /// </summary>
+        /// <remarks>
+        /// With 'auto', Newman attempts to automatically turn color on or off based on the color support in the terminal. This behaviour can be modified by using the 'on' or 'off' value accordingly.
+        /// </remarks>
+        public string Color { get; set; }
+
+        /// <summary>
+        ///     Specify whether or not to force the unicode disable option. When supplied, all symbols in the output will be replaced by their plain text equivalents.
+        /// </summary>
+        public bool DisableUnicode { get; set; }
+
+        /// <summary>
+        ///     Show detailed information of collection run and each request sent.
+        /// </summary>
+        public bool Verbose { get; set; }
+
+        /// <summary>
+        ///     Newman supports SSL client certificates, via the following CLI options
+        /// </summary>
+        public SSLClientCertificateSettings SSLClientCertificateSettings { get; set; }
 
         /// <summary>
         ///     Reporters (and any reporter-specific options) for test results
@@ -124,11 +157,16 @@ namespace Cake.Newman
             {
                 args.AppendSwitch(ArgumentNames.ScriptTimeout, ScriptTimeout.ToString());
             }
+            if (!string.IsNullOrWhiteSpace(Color)) args.AppendSwitch(ArgumentNames.Color, Color);
+            if (NoInsecureFileRead) args.Append(ArgumentNames.NoInsecureFileRead);
             if (DisableStrictSSL) args.Append(ArgumentNames.Insecure);
             if (IgnoreRedirects) args.Append(ArgumentNames.IgnoreRedirects);
             if (RequestDelay != default(int)) args.AppendSwitch(ArgumentNames.RequestDelay, RequestDelay.ToString());
             if (IterationCount != default(int)) args.AppendSwitch(ArgumentNames.IterationCount, IterationCount.ToString());
             if (ExitOnFirstFailure) args.Append(ArgumentNames.Bail);
+            if (SuppressExitCode) args.Append(ArgumentNames.SuppressExitCode);
+            if (DisableUnicode) args.Append(ArgumentNames.DisableUnicode);
+            if (Verbose) args.Append(ArgumentNames.Verbose);
             if (Reporters.Any())
             {
                 args.AppendSwitch(ArgumentNames.Reporters,
@@ -137,6 +175,15 @@ namespace Cake.Newman
                 {
                     reporter.Value?.RenderOptions(args);
                 }
+            }
+            if (SSLClientCertificateSettings != null)
+            {
+                if (SSLClientCertificateSettings.Cert != null)
+                    args.AppendSwitchQuoted(ArgumentNames.SslClientCert, SSLClientCertificateSettings.Cert.FullPath);
+                if (SSLClientCertificateSettings.Key != null)
+                    args.AppendSwitchQuoted(ArgumentNames.SslClientKey, SSLClientCertificateSettings.Key.FullPath);
+                if (!string.IsNullOrWhiteSpace(SSLClientCertificateSettings.Passphrase))
+                    args.AppendSwitchQuotedSecret(ArgumentNames.SslClientPassphrase, SSLClientCertificateSettings.Passphrase);
             }
         }
     }

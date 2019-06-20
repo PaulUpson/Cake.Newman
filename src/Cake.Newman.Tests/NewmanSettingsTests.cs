@@ -44,6 +44,54 @@ namespace Cake.Newman.Tests
                 result.Args().Should().Be("--bail");
             }
 
+            [Fact]
+            public void ShouldIncludeNoInsecureFileReadWhenSet()
+            {
+                var fixture = new NewmanFixture { Settings = { NoInsecureFileRead = true } };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--no-insecure-file-read");
+            }
+
+            [Fact]
+            public void ShouldIncludeSuppessExitCodeWhenSet()
+            {
+                var fixture = new NewmanFixture { Settings = { SuppressExitCode = true } };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--suppress-exit-code");
+            }
+
+            [Fact]
+            public void ShouldIncludeDisableUnicodeWhenSet()
+            {
+                var fixture = new NewmanFixture { Settings = { DisableUnicode = true } };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--disable-unicode");
+            }
+
+            [Fact]
+            public void ShouldIncludeVerboseWhenSet()
+            {
+                var fixture = new NewmanFixture { Settings = { Verbose = true } };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--verbose");
+            }
+
         }
 
         [Theory]
@@ -117,6 +165,22 @@ namespace Cake.Newman.Tests
 
             // Then
             result.Args().Should().Be($"--iteration-count {iterationCount}");
+        }
+
+        [Theory]
+        [InlineData("on")]
+        [InlineData("off")]
+        [InlineData("auto")]
+        public void ShouldSpecifyColorWhenSet(string colorValue)
+        {
+            // Given
+            var fixture = new NewmanFixture { Settings = { Color = colorValue } };
+
+            // When
+            var result = fixture.Run();
+
+            // Then
+            result.Args().Should().Be($"--color {colorValue}");
         }
 
         public sealed class TheExportPaths
@@ -201,6 +265,72 @@ namespace Cake.Newman.Tests
 
                 // Then
                 result.Args().Should().Be("-d \"vars/data.json\"", "file paths are quoted and trimmed");
+            }
+        }
+
+        public sealed class TheSSLClientCertificateSettings
+        {
+            [Fact]
+            public void ShouldSpecifyCertFile()
+            {
+                // Given
+                var fixture = new NewmanFixture 
+                { 
+                    Settings = { 
+                        SSLClientCertificateSettings = new SSLClientCertificateSettings 
+                        {
+                            Cert = "./certs/client.cert"
+                        } 
+                    }
+                };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--ssl-client-cert \"certs/client.cert\"", "file paths are quoted and trimmed");
+            }
+
+            [Fact]
+            public void ShouldSpecifyKeyFile()
+            {
+                // Given
+                var fixture = new NewmanFixture 
+                { 
+                    Settings = { 
+                        SSLClientCertificateSettings = new SSLClientCertificateSettings 
+                        {
+                            Key = "./certs/client.key"
+                        } 
+                    }
+                };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--ssl-client-key \"certs/client.key\"", "file paths are quoted and trimmed");
+            }
+
+            [Fact]
+            public void ShouldSpecifyPassphrase()
+            {
+                // Given
+                var fixture = new NewmanFixture 
+                { 
+                    Settings = { 
+                        SSLClientCertificateSettings = new SSLClientCertificateSettings 
+                        {
+                            Passphrase = "password1234"
+                        } 
+                    }
+                };
+
+                // When
+                var result = fixture.Run();
+
+                // Then
+                result.Args().Should().Be("--ssl-client-passphrase \"password1234\"", "passwords are quoted and trimmed");
             }
         }
     }
