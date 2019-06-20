@@ -13,3 +13,18 @@
 # 0.3.1
 
 - Update package icon URL
+
+# 0.3.2
+
+- Support white-space in the filename of a collection
+
+# 0.4.0
+
+- Update to Cake 0.33.0
+- Updated to support 
+  - NoInsecureFileRead
+  - SuppressExitCode
+  - Color
+  - DisableUnicode
+  - verbose
+- Updated to support SSL Client Certificates
