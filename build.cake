@@ -1,8 +1,8 @@
-#tool "GitVersion.CommandLine"
-#addin nuget:?package=Cake.DocFx
+#addin nuget:?package=Cake.DocFx&version=0.13.0
+#tool nuget:?package=GitVersion.CommandLine&version=4.0.0
 #tool nuget:?package=docfx.console&version=2.33.2
-#tool "OpenCover"
-#tool "nuget:?package=ReportGenerator"
+#tool nuget:?package=OpenCover&version=4.7.922
+#tool nuget:?package=ReportGenerator&version=4.2.2
 
 #load "helpers.cake"
 
